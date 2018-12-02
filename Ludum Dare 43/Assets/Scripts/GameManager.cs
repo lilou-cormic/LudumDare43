@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    public GameOverMenu GameOverMenu;
+
     public Spawner PlayerSpawner;
     public Spawner[] EnemySpawners;
 
@@ -26,6 +28,8 @@ public class GameManager : MonoBehaviour
 
     public int PlayerCounter { get; set; } = 0;
 
+    private int MaxPlayer { get; set; } = 100;
+
     public int PlayerLeft { get; set; } = 100;
     public int PlayerDead { get; set; } = 0;
     public int PlayerSafe { get; set; } = 0;
@@ -43,9 +47,14 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
+    private void OnEnable()
+    {
+        Time.timeScale = 1;
+    }
+
     private void Start()
     {
-        PlayerLeft = 100;
+        PlayerLeft = MaxPlayer;
         PlayerDead = 0;
         PlayerSafe = 0;
 
@@ -69,8 +78,8 @@ public class GameManager : MonoBehaviour
         IsPlayersTurn = false;
         IsSelectingTile = false;
 
-        if (Players.Count == 0)
-            Debug.Log("GAME OVER!");
+        if (PlayerLeft == 0 && Players.Count == 0)
+            GameOverMenu.ShowGameOver();
 
         SpawnEnemy();
     }
