@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
 
     public int PlayerCounter { get; set; } = 0;
 
-    private int MaxPlayer { get; set; } = 100;
+    public int MaxPlayer { get; private set; } = 100;
 
     public int PlayerLeft { get; set; } = 100;
     public int PlayerDead { get; set; } = 0;
@@ -41,6 +41,8 @@ public class GameManager : MonoBehaviour
 
     private bool MustWaitToStartPlayerTurn = false;
     private bool MustWaitToMoveEnemy = false;
+
+    public static int HighScore = 0;
 
     private void Awake()
     {
@@ -79,7 +81,12 @@ public class GameManager : MonoBehaviour
         IsSelectingTile = false;
 
         if (PlayerLeft == 0 && Players.Count == 0)
+        {
+            if (PlayerSafe > HighScore)
+                HighScore = PlayerSafe;
+
             GameOverMenu.ShowGameOver();
+        }
 
         SpawnEnemy();
     }
@@ -249,9 +256,9 @@ public class GameManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        PlayerLeftText.text = PlayerLeft.ToString();
-        PlayerDangerText.text = Players.Sum(x => x.Count).ToString();
-        PlayerDeadText.text = PlayerDead.ToString();
-        PlayerSafeText.text = PlayerSafe.ToString();
+        PlayerLeftText.text = "Left: " + PlayerLeft.ToString();
+        PlayerDangerText.text = "Danger: " + Players.Where(x => !x.MustRemove).Sum(x => x.Count).ToString();
+        PlayerDeadText.text = "Dead: " + PlayerDead.ToString();
+        PlayerSafeText.text = "Safe: " + PlayerSafe.ToString();
     }
 }

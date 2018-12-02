@@ -81,7 +81,7 @@ public class Enemy : Token
 
     public void Die()
     {
-        Debug.Log($"{name} Died [{CurrentTile.name}]");
+        //Debug.Log($"{name} Died [{CurrentTile.name}]");
 
         CurrentTile.Enemy = null;
         GameManager.Instance.Enemies.Remove(this);

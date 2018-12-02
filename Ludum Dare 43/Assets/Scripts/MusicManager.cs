@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MusicManager : MonoBehaviour
 {
-    private static MusicManager MainInstance { get; set; }
+    public static MusicManager MainInstance { get; private set; }
 
     public static bool PlayMusicA { get; set; } = true;
     public static bool PlayMusicB { get; set; }

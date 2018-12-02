@@ -14,12 +14,11 @@ public abstract class Token : MonoBehaviour
 
     public virtual void MoveToTile(Tile tile)
     {
-        Debug.Log($"{name}: {CurrentTile.name} - {tile.name}");
+        //Debug.Log($"{name}: {CurrentTile.name} - {tile.name}");
 
         CurrentTile = tile;
 
         IsMoving = true;
-        //transform.position = CurrentTile.transform.position;
     }
 
     public virtual IEnumerable<Tile> GetAvailableTiles()

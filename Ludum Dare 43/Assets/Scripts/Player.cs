@@ -10,7 +10,7 @@ public class Player : Token
 
     public int Count { get; set; } = 1;
 
-    private bool MustRemove = false;
+    public bool MustRemove { get; private set; } = false;
 
     public void HighlightTiles()
     {
@@ -39,7 +39,11 @@ public class Player : Token
             CurrentTile.Player.Count += Count;
 
             if (CurrentTile.IsGoal)
+            {
+                SoundEffectManager.PlayGoalClip();
+
                 GameManager.Instance.PlayerSafe += Count;
+            }
 
             MustRemove = true;
         }
@@ -60,7 +64,7 @@ public class Player : Token
 
     public void Die()
     {
-        Debug.Log($"{name} Died [{CurrentTile.name}]");
+        SoundEffectManager.PlayDeathClip();
 
         GameManager.Instance.PlayerDead += Count;
 

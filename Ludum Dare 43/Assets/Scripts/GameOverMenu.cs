@@ -16,6 +16,11 @@ public class GameOverMenu : MonoBehaviour
 
     public void ShowGameOver()
     {
+        if (GameManager.Instance.PlayerSafe >= GameManager.Instance.MaxPlayer / 2)
+            SoundEffectManager.PlayGoodGameOverClip();
+        else
+            SoundEffectManager.PlayBadGameOverClip();
+
         GameOverPanel.SetActive(true);
     }
 }

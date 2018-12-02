@@ -6,8 +6,6 @@ public class PauseMenu : MonoBehaviour
 {
     public GameObject PausePanel;
 
-    public MusicManager MusicPlayer;
-
     public static bool IsGamePaused { get; private set; } = false;
 
     private void OnEnable()
@@ -26,7 +24,13 @@ public class PauseMenu : MonoBehaviour
         IsGamePaused = PausePanel.activeSelf;
 
         Time.timeScale = 1;
-        MusicPlayer.AudioSource.volume = MusicManager.Volume;
+        MusicManager.MainInstance.AudioSource.volume = MusicManager.Volume;
+    }
+
+    private void OnDisable()
+    {
+        if (MusicManager.MainInstance?.AudioSource != null)
+            MusicManager.MainInstance.AudioSource.volume = MusicManager.Volume;
     }
 
     // Update is called once per frame
@@ -49,12 +53,12 @@ public class PauseMenu : MonoBehaviour
             if (IsGamePaused)
             {
                 Time.timeScale = 0;
-                MusicPlayer.AudioSource.volume *= 0.5f;
+                MusicManager.MainInstance.AudioSource.volume *= 0.5f;
             }
             else
             {
                 Time.timeScale = 1;
-                MusicPlayer.AudioSource.volume = MusicManager.Volume;
+                MusicManager.MainInstance.AudioSource.volume = MusicManager.Volume;
             }
         }
     }
