@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Token : MonoBehaviour
+public abstract class Token : MonoBehaviour
 {
     public Tile CurrentTile { get; set; }
+
+    private bool IsInitialized { get; set; } = false;
+    private bool IsMoving { get; set; } = false;
+
+    protected abstract void OnDoneMoving();
 
     public virtual void MoveToTile(Tile tile)
     {
@@ -13,7 +18,8 @@ public class Token : MonoBehaviour
 
         CurrentTile = tile;
 
-        transform.position = CurrentTile.transform.position;
+        IsMoving = true;
+        //transform.position = CurrentTile.transform.position;
     }
 
     public virtual IEnumerable<Tile> GetAvailableTiles()
@@ -24,5 +30,42 @@ public class Token : MonoBehaviour
     public bool CanMove()
     {
         return GetAvailableTiles().Any();
+    }
+
+    private Vector3 velocity = Vector3.zero;
+
+    public void Update()
+    {
+        if (!IsInitialized)
+        {
+            StartCoroutine(Initialize());
+            return;
+        }
+
+        if (IsMoving)
+        {
+            if (Vector3.Distance(transform.position, CurrentTile.transform.position) < 0.01)
+            {
+                transform.position = CurrentTile.transform.position;
+                IsMoving = false;
+                OnDoneMoving();
+                return;
+            }
+
+            transform.position = Vector3.SmoothDamp(transform.position, CurrentTile.transform.position, ref velocity, Time.deltaTime * 2);
+        }
+    }
+
+    private IEnumerator Initialize()
+    {
+        yield return IntilializeInternal();
+
+        IsInitialized = true;
+        yield return null;
+    }
+
+    protected virtual IEnumerator IntilializeInternal()
+    {
+        yield return null;
     }
 }

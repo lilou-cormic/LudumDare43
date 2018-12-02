@@ -22,12 +22,17 @@ public class Enemy : Token
         base.MoveToTile(tile);
 
         CurrentTile.Enemy = this;
+    }
 
+    protected override void OnDoneMoving()
+    {
         if (CurrentTile.Player != null)
         {
             CurrentTile.Player.Die();
             Die();
         }
+
+        GameManager.Instance.EndEnemyTurn();
     }
 
     private Tile _TargetTile;

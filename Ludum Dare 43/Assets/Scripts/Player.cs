@@ -10,6 +10,8 @@ public class Player : Token
 
     public int Count { get; set; } = 1;
 
+    private bool MustRemove = false;
+
     public void HighlightTiles()
     {
         foreach (var tile in GetAvailableTiles())
@@ -39,8 +41,13 @@ public class Player : Token
             if (CurrentTile.IsGoal)
                 GameManager.Instance.PlayerSafe += Count;
 
-            RemovePlayer();
+            MustRemove = true;
         }
+    }
+    protected override void OnDoneMoving()
+    {
+        if (MustRemove)
+            RemovePlayer();
 
         GameManager.Instance.EndPlayerTurn();
     }

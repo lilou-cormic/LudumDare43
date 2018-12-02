@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,6 +35,9 @@ public class GameManager : MonoBehaviour
     public Text PlayerDeadText;
     public Text PlayerSafeText;
 
+    private bool MustWaitToStartPlayerTurn = false;
+    private bool MustWaitToMoveEnemy = false;
+
     private void Awake()
     {
         Instance = this;
@@ -54,6 +58,9 @@ public class GameManager : MonoBehaviour
         IsSelectingTile = false;
         IsEnemysTurn = false;
 
+        MustWaitToStartPlayerTurn = false;
+        MustWaitToMoveEnemy = false;
+
         SpawnPlayer();
     }
 
@@ -70,8 +77,6 @@ public class GameManager : MonoBehaviour
 
     public void EndEnemyTurn()
     {
-        MoveEnemy();
-
         IsEnemysTurn = false;
 
         SpawnPlayer();
@@ -108,6 +113,16 @@ public class GameManager : MonoBehaviour
 
         DetermineEnemyMovement();
 
+        MustWaitToStartPlayerTurn = true;
+    }
+
+    private void StartPlayerTurn()
+    {
+        if (!MustWaitToStartPlayerTurn)
+            return;
+
+        MustWaitToStartPlayerTurn = false;
+
         IsPlayersTurn = true;
     }
 
@@ -135,7 +150,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        EndEnemyTurn();
+        MustWaitToMoveEnemy = true;
     }
 
     public Enemy EnemyToMove { get; set; }
@@ -177,8 +192,13 @@ public class GameManager : MonoBehaviour
             enemies[Random.Range(0, enemies.Length)].MoveRandomly();
     }
 
-    private void MoveEnemy()
+    public void MoveEnemy()
     {
+        if (!MustWaitToMoveEnemy)
+            return;
+
+        MustWaitToMoveEnemy = false;
+
         if (EnemyToMove != null && EnemyToMove.TargetTile != null)
         {
             if (EnemyToMove.TargetPlayer != null && EnemyToMove.TargetTile.Player == null && EnemyToMove.GetAvailableTiles().Any(x => x.Player != null && x.Player != EnemyToMove.TargetPlayer))
@@ -188,8 +208,34 @@ public class GameManager : MonoBehaviour
 
             EnemyToMove.TargetTile = null;
         }
+        else
+        {
+            EnemyToMove = null;
+            EndEnemyTurn();
+        }
+    }
 
-        EnemyToMove = null;
+    private void Update()
+    {
+        if (MustWaitToStartPlayerTurn)
+            StartCoroutine(WaitToStartPlayerTurn());
+
+        if (MustWaitToMoveEnemy)
+            StartCoroutine(WaitToMoveEnemy());
+    }
+
+    private IEnumerator WaitToStartPlayerTurn()
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        StartPlayerTurn();
+    }
+
+    private IEnumerator WaitToMoveEnemy()
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        MoveEnemy();
     }
 
     private void LateUpdate()
