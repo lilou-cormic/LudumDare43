@@ -6,7 +6,7 @@
 
 https://lilou-cormic.itch.io/cant-save-them-all
 
-Game created by lilou_cormic for [Ludum Dare 43 (Nov. 2018)](https://ldjam.com/events/ludum-dare/43/cant-save-them-all)
+Game created by lilou_cormic for [Ludum Dare 43 (Dec. 2018)](https://ldjam.com/events/ludum-dare/43/cant-save-them-all)
 
 Tools Used
 - Unity 2018.3.0b12
